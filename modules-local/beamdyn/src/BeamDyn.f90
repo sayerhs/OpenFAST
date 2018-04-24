@@ -1318,39 +1318,39 @@ subroutine Init_MiscVars( p, u, y, m, ErrStat, ErrMsg )
       CALL AllocAry(m%qp%E1,               p%dof_node/2,p%nqp,p%elem_total,                  'm%qp%E1    at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
       CALL AllocAry(m%qp%kappa,            p%dof_node/2,p%nqp,p%elem_total,                  'm%qp%kappa at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
       CALL AllocAry(m%qp%RR0,              3,3,         p%nqp,p%elem_total,                  'm%qp%RR0 at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
-      CALL AllocAry(m%qp%Stif,             6,6,         p%nqp,p%elem_total,                  'm%qp%Stif at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
+      CALL AllocAry(m%qp%Stif,             p%nqp, 6, 6, p%elem_total,                  'm%qp%Stif at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
 
          ! Calculations for mass matrix
       CALL AllocAry(m%qp%RR0mEta,          p%dof_node/2,p%nqp,p%elem_total,                  'm%qp%RRo times p%qp%mEta at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
       CALL AllocAry(m%qp%rho,              3,3,         p%nqp,p%elem_total,                  'm%qp%rho at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
-      CALL AllocAry(m%qp%betaC,            6,6,         p%nqp,p%elem_total,                  'm%qp%betaC at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
+      CALL AllocAry(m%qp%betaC,            p%nqp, 6, 6, p%elem_total,                  'm%qp%betaC at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
 
          ! Force calculation terms
-      CALL AllocAry(m%qp%Fb,                 p%dof_node,p%nqp,p%elem_total,                  'm%qp%Fb at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
-      CALL AllocAry(m%qp%Fc,                 p%dof_node,p%nqp,p%elem_total,                  'm%qp%Fc at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
-      CALL AllocAry(m%qp%Fd,                 p%dof_node,p%nqp,p%elem_total,                  'm%qp%Fd at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
-      CALL AllocAry(m%qp%Fg,                 p%dof_node,p%nqp,p%elem_total,                  'm%qp%Fg at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
-      CALL AllocAry(m%qp%Fi,                 p%dof_node,p%nqp,p%elem_total,                  'm%qp%Fi at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
-      CALL AllocAry(m%qp%Ftemp,              p%dof_node,p%nqp,p%elem_total,                  'm%qp%Ftemp at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
+      CALL AllocAry(m%qp%Fb,                 p%nqp,p%dof_node,p%elem_total,                  'm%qp%Fb at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
+      CALL AllocAry(m%qp%Fc,                 p%nqp,p%dof_node,p%elem_total,                  'm%qp%Fc at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
+      CALL AllocAry(m%qp%Fd,                 p%nqp,p%dof_node,p%elem_total,                  'm%qp%Fd at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
+      CALL AllocAry(m%qp%Fg,                 p%nqp,p%dof_node,p%elem_total,                  'm%qp%Fg at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
+      CALL AllocAry(m%qp%Fi,                 p%nqp,p%dof_node,p%elem_total,                  'm%qp%Fi at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
+      CALL AllocAry(m%qp%Ftemp,              p%nqp,p%dof_node,p%elem_total,                  'm%qp%Ftemp at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
 
          ! Inertial force terms
-      CALL AllocAry(m%qp%Gi,               6,6,         p%nqp,p%elem_total,                  'm%qp%Gi gyroscopic at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
-      CALL AllocAry(m%qp%Ki,               6,6,         p%nqp,p%elem_total,                  'm%qp%Ki stiffness at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
-      CALL AllocAry(m%qp%Mi,               6,6,         p%nqp,p%elem_total,                  'm%qp%Mi mass at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
+      CALL AllocAry(m%qp%Gi,               p%nqp, 6, 6, p%elem_total,                  'm%qp%Gi gyroscopic at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
+      CALL AllocAry(m%qp%Ki,               p%nqp, 6, 6, p%elem_total,                  'm%qp%Ki stiffness at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
+      CALL AllocAry(m%qp%Mi,               p%nqp, 6, 6, p%elem_total,                  'm%qp%Mi mass at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
 
          ! Elastic force terms: \f$ \underline{\underline{\mathcal{O}}} \f$, etc. from equation (19-21) of NREL CP-2C00-60759.
-      CALL AllocAry(m%qp%Oe,               6,6,         p%nqp,p%elem_total,                  'm%qp%Oe term at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
-      CALL AllocAry(m%qp%Pe,               6,6,         p%nqp,p%elem_total,                  'm%qp%Pe term at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
-      CALL AllocAry(m%qp%Qe,               6,6,         p%nqp,p%elem_total,                  'm%qp%Qe term at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
+      CALL AllocAry(m%qp%Oe,               p%nqp, 6, 6, p%elem_total,                  'm%qp%Oe term at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
+      CALL AllocAry(m%qp%Pe,               p%nqp, 6, 6, p%elem_total,                  'm%qp%Pe term at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
+      CALL AllocAry(m%qp%Qe,               p%nqp, 6, 6, p%elem_total,                  'm%qp%Qe term at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
 
          ! Dissipative terms
-      CALL AllocAry(m%qp%Gd,               6,6,         p%nqp,p%elem_total,                  'm%qp%Gd term at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
-      CALL AllocAry(m%qp%Od,               6,6,         p%nqp,p%elem_total,                  'm%qp%Od term at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
-      CALL AllocAry(m%qp%Pd,               6,6,         p%nqp,p%elem_total,                  'm%qp%Pd term at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
-      CALL AllocAry(m%qp%Qd,               6,6,         p%nqp,p%elem_total,                  'm%qp%Qd term at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
-      CALL AllocAry(m%qp%Sd,               6,6,         p%nqp,p%elem_total,                  'm%qp%Sd term at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
-      CALL AllocAry(m%qp%Xd,               6,6,         p%nqp,p%elem_total,                  'm%qp%Xd term at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
-      CALL AllocAry(m%qp%Yd,               6,6,         p%nqp,p%elem_total,                  'm%qp%Yd term at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
+      CALL AllocAry(m%qp%Gd,               p%nqp, 6, 6, p%elem_total,                  'm%qp%Gd term at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
+      CALL AllocAry(m%qp%Od,               p%nqp, 6, 6, p%elem_total,                  'm%qp%Od term at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
+      CALL AllocAry(m%qp%Pd,               p%nqp, 6, 6, p%elem_total,                  'm%qp%Pd term at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
+      CALL AllocAry(m%qp%Qd,               p%nqp, 6, 6, p%elem_total,                  'm%qp%Qd term at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
+      CALL AllocAry(m%qp%Sd,               p%nqp, 6, 6, p%elem_total,                  'm%qp%Sd term at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
+      CALL AllocAry(m%qp%Xd,               p%nqp, 6, 6, p%elem_total,                  'm%qp%Xd term at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
+      CALL AllocAry(m%qp%Yd,               p%nqp, 6, 6, p%elem_total,                  'm%qp%Yd term at quadrature point',ErrStat2,ErrMsg2); CALL SetErrStat( ErrStat2, ErrMsg2, ErrStat, ErrMsg, RoutineName )
 
          ! Initialize variables that could be output before they are set.
       m%qp%Fi = 0.0_BDKi      ! This could be output before it gets set.
@@ -2114,7 +2114,7 @@ SUBROUTINE BD_StifAtDeformedQP( nelem, p, m )
          !!        \left(\underline{\underline{R}} \underline{\underline{R}}_0\right)^T    &  0             \\
          !!                      0  &  \left(\underline{\underline{R}} \underline{\underline{R}}_0\right)^T
          !!     \end{bmatrix} \f$
-      m%qp%Stif(:,:,idx_qp,nelem) = MATMUL(tempR6,MATMUL(p%Stif0_QP(1:6,1:6,temp_id2+idx_qp),TRANSPOSE(tempR6)))
+      m%qp%Stif(idx_qp,:,:,nelem) = MATMUL(tempR6,MATMUL(p%Stif0_QP(1:6,1:6,temp_id2+idx_qp),TRANSPOSE(tempR6)))
    ENDDO
 
 END SUBROUTINE BD_StifAtDeformedQP
@@ -2204,15 +2204,15 @@ SUBROUTINE BD_ElasticForce(nelem,p,m,fact)
             !!       \end{bmatrix}
             !! \f$
          Wrk33(:,:) = OuterProduct(m%qp%RR0(1:3,3,idx_qp,nelem), m%qp%RR0(1:3,3,idx_qp,nelem))     ! z-direction in IEC coords
-         C21(:,:)   = m%qp%Stif(4:6,1:3,idx_qp,nelem) + cet*k1s*Wrk33(:,:)
+         C21(:,:)   = m%qp%Stif(idx_qp,4:6,1:3,nelem) + cet*k1s*Wrk33(:,:)
 
          tildeE     = SkewSymMat(m%qp%E1(:,idx_qp,nelem))
-         epsi(:,:)  = MATMUL(m%qp%Stif(1:3,1:3,idx_qp,nelem),tildeE)    ! Stif is RR0 * p%Stif0_QP * RR0^T
+         epsi(:,:)  = MATMUL(m%qp%Stif(idx_qp,1:3,1:3,nelem),tildeE)    ! Stif is RR0 * p%Stif0_QP * RR0^T
          mu(:,:)    = MATMUL(C21,tildeE)
 
-         m%qp%Oe(:,:,idx_qp,nelem)     = 0.0_BDKi
-         m%qp%Oe(1:3,4:6,idx_qp,nelem) = epsi(1:3,1:3) - SkewSymMat(m%qp%Fc(1:3,idx_qp,nelem))
-         m%qp%Oe(4:6,4:6,idx_qp,nelem) =   mu(1:3,1:3) - SkewSymMat(m%qp%Fc(4:6,idx_qp,nelem))
+         m%qp%Oe(idx_qp,:,:,    nelem)     = 0.0_BDKi
+         m%qp%Oe(idx_qp,1:3,4:6,nelem) = epsi(1:3,1:3) - SkewSymMat(m%qp%Fc(idx_qp,1:3,nelem))
+         m%qp%Oe(idx_qp,4:6,4:6,nelem) =   mu(1:3,1:3) - SkewSymMat(m%qp%Fc(idx_qp,4:6,nelem))
 
 
             !> ###Calculated \f$ \underline{\underline{\mathcal{P}}} \f$ from equation (20)
@@ -2227,9 +2227,9 @@ SUBROUTINE BD_ElasticForce(nelem,p,m,fact)
             !!          \underline{\underline{0}}        &     \underline{\underline{0}}     \\
             !!          \psi_E^T + \tilde{F}             &     \mu^T
             !!    \end{bmatrix}  \f$
-         m%qp%Pe(:,:,idx_qp,nelem)     = 0.0_BDKi
-         m%qp%Pe(4:6,1:3,idx_qp,nelem) = TRANSPOSE(epsi) + SkewSymMat(m%qp%Fc(1:3,idx_qp,nelem))
-         m%qp%Pe(4:6,4:6,idx_qp,nelem) = TRANSPOSE(mu)
+         m%qp%Pe(idx_qp,:,:,    nelem)     = 0.0_BDKi
+         m%qp%Pe(idx_qp,4:6,1:3,nelem) = TRANSPOSE(epsi) + SkewSymMat(m%qp%Fc(idx_qp,1:3,nelem))
+         m%qp%Pe(idx_qp,4:6,4:6,nelem) = TRANSPOSE(mu)
 
             !> ###Calculated \f$ \underline{\underline{\mathcal{Q}}} \f$ from equation (21)
             !!
@@ -2245,8 +2245,8 @@ SUBROUTINE BD_ElasticForce(nelem,p,m,fact)
             !!    =   - \tilde{E}_1   \underline{\underline{\mathcal{O}}}_{12}
             !! \f}\n
             !! Note: \f$ \tilde{E}_1^T = - \tilde{E}_1 \f$
-         m%qp%Qe(:,:,idx_qp,nelem)     = 0.0_BDKi
-         m%qp%Qe(4:6,4:6,idx_qp,nelem) = -MATMUL(tildeE,m%qp%Oe(1:3,4:6,idx_qp,nelem))
+         m%qp%Qe(idx_qp,:,:,    nelem)     = 0.0_BDKi
+         m%qp%Qe(idx_qp,4:6,4:6,nelem) = -MATMUL(tildeE,m%qp%Oe(idx_qp,1:3,4:6,nelem))
       end do
       
    ENDIF
@@ -2322,7 +2322,7 @@ contains
          !!                \underline{k}
          !!          \end{array} \right\} \f$
          !!
-      fff(1:6) = MATMUL(m%qp%Stif(:,:,idx_qp,nelem),eee)
+      fff(1:6) = MATMUL(m%qp%Stif(idx_qp,:,:,nelem),eee)
 
 
          !> ###Calculate the extension twist coupling.
@@ -2358,8 +2358,8 @@ contains
       !! \f$  C_{et} = C_{4,4} + C_{5,5} \f$
       ! Refer Section 1.4 in "Dymore User's Manual - Formulation and finite element implementation of beam elements".
       cet=  p%Stif0_QP(4,4,(nelem-1)*p%nqp+idx_qp) + p%Stif0_QP(5,5,(nelem-1)*p%nqp+idx_qp)     ! Dymore theory (22)
-      m%qp%Fc(1:3,idx_qp,nelem) = fff(1:3) + 0.5_BDKi*cet*k1s*k1s*m%qp%RR0(1:3,3,idx_qp,nelem)  ! Dymore theory (25a). Note z-axis is the length of blade.
-      m%qp%Fc(4:6,idx_qp,nelem) = fff(4:6) +          cet*e1s*k1s*m%qp%RR0(1:3,3,idx_qp,nelem)  ! Dymore theory (25b). Note z-axis is the length of blade.
+      m%qp%Fc(idx_qp,1:3,nelem) = fff(1:3) + 0.5_BDKi*cet*k1s*k1s*m%qp%RR0(1:3,3,idx_qp,nelem)  ! Dymore theory (25a). Note z-axis is the length of blade.
+      m%qp%Fc(idx_qp,4:6,nelem) = fff(4:6) +          cet*e1s*k1s*m%qp%RR0(1:3,3,idx_qp,nelem)  ! Dymore theory (25b). Note z-axis is the length of blade.
 
          !> ###Calculate \f$ \underline{\mathcal{F}}^d \f$, equation (16)
          !! \f$ \underline{F}^d =
@@ -2370,9 +2370,9 @@ contains
          !!    =  \begin{bmatrix}   \underline{0} \\
          !!                \left(\underline{\mathcal{F}}^c \times \underline{E}_1 \right)^T
          !!       \end{bmatrix}  \f$
-      m%qp%Fd(1:3,idx_qp,nelem)  = 0.0_BDKi
+      m%qp%Fd(idx_qp,1:3,nelem)  = 0.0_BDKi
    ! ADP uu0 ref: If E1 is referenced against a different curve than Stif0_QP, there will be strange coupling terms here. 
-      m%qp%Fd(4:6,idx_qp,nelem)  = cross_product(m%qp%Fc(1:3,idx_qp,nelem), m%qp%E1(:,idx_qp,nelem))   
+      m%qp%Fd(idx_qp,4:6,nelem)  = cross_product(m%qp%Fc(idx_qp,1:3,nelem), m%qp%E1(:,idx_qp,nelem))
       
    end subroutine Calc_Fc_Fd
 END SUBROUTINE BD_ElasticForce
@@ -2501,10 +2501,10 @@ SUBROUTINE BD_InertialForce( nelem, p, m, fact )
       nu   = MATMUL(m%qp%rho(:,:,idx_qp,nelem),m%qp%aaa(4:6,idx_qp,nelem))
 
       !Compute Fi (Equation 22 in Wang_2014, Equation 17.110 in Bauchau's book)
-      m%qp%Fi(1:3,idx_qp,nelem) = p%qp%mmm(idx_qp,nelem)*m%qp%aaa(1:3,idx_qp,nelem) &
+      m%qp%Fi(idx_qp,1:3,nelem) = p%qp%mmm(idx_qp,nelem)*m%qp%aaa(1:3,idx_qp,nelem) &
                                 + cross_product(m%qp%aaa(4:6,idx_qp,nelem), m%qp%RR0mEta(:,idx_qp,nelem)) &
                                 + cross_product(m%qp%vvv(4:6,idx_qp,nelem), beta)   ! MATMUL(SkewSymMat(aaa(4:6)),mEta)+MATMUL(SkewSymMat(ome),beta)
-      m%qp%Fi(4:6,idx_qp,nelem) = cross_product(m%qp%RR0mEta(:,idx_qp,nelem), m%qp%aaa(1:3,idx_qp,nelem)) + nu + cross_product(m%qp%vvv(4:6,idx_qp,nelem), gama)                     ! MATMUL(SkewSymMat(mEta),aaa(1:3)) + nu + MATMUL(SkewSymMat(ome),gama)
+      m%qp%Fi(idx_qp,4:6,nelem) = cross_product(m%qp%RR0mEta(:,idx_qp,nelem), m%qp%aaa(1:3,idx_qp,nelem)) + nu + cross_product(m%qp%vvv(4:6,idx_qp,nelem), gama)                     ! MATMUL(SkewSymMat(mEta),aaa(1:3)) + nu + MATMUL(SkewSymMat(ome),gama)
    end do
    
    IF(fact) THEN
@@ -2512,7 +2512,7 @@ SUBROUTINE BD_InertialForce( nelem, p, m, fact )
       do idx_qp=1,p%nqp
 
           !Gyroscopic Matrix (Equation 17 in Wang_2014)
-          m%qp%Gi(:,1:3,idx_qp,nelem)   = 0.0_BDKi
+          m%qp%Gi(idx_qp,:,1:3,nelem)   = 0.0_BDKi
           SSmat_vvv        = SkewSymMat(m%qp%vvv(4:6,idx_qp,nelem))
           SSmat_RR0mEta    = SkewSymMat(m%qp%RR0mEta(:,idx_qp,nelem))
           
@@ -2521,14 +2521,14 @@ SUBROUTINE BD_InertialForce( nelem, p, m, fact )
           nu               =  MATMUL(m%qp%rho(:,:,idx_qp,nelem),m%qp%aaa(4:6,idx_qp,nelem))
           beta             =  cross_product(m%qp%vvv(4:6,idx_qp,nelem), m%qp%RR0mEta(:,idx_qp,nelem)) !MATMUL(SkewSymMat(ome),mEta)
           gama             =  MATMUL(m%qp%rho(:,:,idx_qp,nelem),m%qp%vvv(4:6,idx_qp,nelem))
-          m%qp%Gi(1:3,4:6,idx_qp,nelem) = -SkewSymMat(beta) + mu
-          m%qp%Gi(4:6,4:6,idx_qp,nelem) = epsi - SkewSymMat(gama)
+          m%qp%Gi(idx_qp,1:3,4:6,nelem) = -SkewSymMat(beta) + mu
+          m%qp%Gi(idx_qp,4:6,4:6,nelem) = epsi - SkewSymMat(gama)
 
           !Stiffness Matrix (Equation 18 in Wang_2014)
-          m%qp%Ki( : ,1:3,idx_qp,nelem) = 0.0_BDKi
-          m%qp%Ki(1:3,4:6,idx_qp,nelem) = -MATMUL(SkewSymMat(m%qp%aaa(4:6,idx_qp,nelem)),SSmat_RR0mEta)  &
+          m%qp%Ki(idx_qp,:,1:3,nelem) = 0.0_BDKi
+          m%qp%Ki(idx_qp,1:3,4:6,nelem) = -MATMUL(SkewSymMat(m%qp%aaa(4:6,idx_qp,nelem)),SSmat_RR0mEta)  &
                                         +  MATMUL(SSmat_vvv,mu)
-          m%qp%Ki(4:6,4:6,idx_qp,nelem) =  MATMUL(SkewSymMat(m%qp%aaa(1:3,idx_qp,nelem)),SSmat_RR0mEta)    &
+          m%qp%Ki(idx_qp,4:6,4:6,nelem) =  MATMUL(SkewSymMat(m%qp%aaa(1:3,idx_qp,nelem)),SSmat_RR0mEta)    &
                                         +  MATMUL(m%qp%rho(:,:,idx_qp,nelem),SkewSymMat(m%qp%aaa(4:6,idx_qp,nelem))) &
                                         -  SkewSymMat(nu)   &
                                         +  MATMUL(epsi,SSmat_vvv)             &
@@ -2566,7 +2566,7 @@ SUBROUTINE BD_DissipativeForce( nelem, p, m,fact )
       !m%qp%betaC(:,:,idx_qp,nelem) = MATMUL( diag(p%beta(i)), temp_b,m%qp%Stif(:,:,idx_qp,nelem))
       DO j=1,6
          DO i=1,6
-            m%qp%betaC(i,j,idx_qp,nelem) = p%beta(i)*m%qp%Stif(i,j,idx_qp,nelem)
+            m%qp%betaC(idx_qp,i,j,nelem) = p%beta(i)*m%qp%Stif(idx_qp,i,j,nelem)
          END DO
       END DO
    END DO
@@ -2594,10 +2594,10 @@ SUBROUTINE BD_DissipativeForce( nelem, p, m,fact )
 
          CALL Calc_FC_FD_ffd()  ! this sets local variable ffd and modifies m%qp%Fc and m%qp%Fd
                   
-         D11 = m%qp%betaC(1:3,1:3,idx_qp,nelem)
-         D12 = m%qp%betaC(1:3,4:6,idx_qp,nelem)
-         D21 = m%qp%betaC(4:6,1:3,idx_qp,nelem)
-         D22 = m%qp%betaC(4:6,4:6,idx_qp,nelem)
+         D11 = m%qp%betaC(idx_qp,1:3,1:3,nelem)
+         D12 = m%qp%betaC(idx_qp,1:3,4:6,nelem)
+         D21 = m%qp%betaC(idx_qp,4:6,1:3,nelem)
+         D22 = m%qp%betaC(idx_qp,4:6,4:6,nelem)
          
          b11(1:3,1:3) = -MATMUL(SkewSymMat(m%qp%E1(:,idx_qp,nelem)),D11)
          b12(1:3,1:3) = -MATMUL(SkewSymMat(m%qp%E1(:,idx_qp,nelem)),D12)
@@ -2605,38 +2605,38 @@ SUBROUTINE BD_DissipativeForce( nelem, p, m,fact )
          SS_ome = SkewSymMat( m%qp%vvv(4:6,idx_qp,nelem) )
 
          ! Compute stiffness matrix Sd
-         m%qp%Sd(1:3,1:3,idx_qp,nelem) = -MATMUL(D11,SS_ome)
-         m%qp%Sd(1:3,4:6,idx_qp,nelem) = -MATMUL(D12,SS_ome)
-         m%qp%Sd(4:6,1:3,idx_qp,nelem) = -MATMUL(D21,SS_ome)
-         m%qp%Sd(4:6,4:6,idx_qp,nelem) = -MATMUL(D22,SS_ome)
+         m%qp%Sd(idx_qp,1:3,1:3,nelem) = -MATMUL(D11,SS_ome)
+         m%qp%Sd(idx_qp,1:3,4:6,nelem) = -MATMUL(D12,SS_ome)
+         m%qp%Sd(idx_qp,4:6,1:3,nelem) = -MATMUL(D21,SS_ome)
+         m%qp%Sd(idx_qp,4:6,4:6,nelem) = -MATMUL(D22,SS_ome)
 
          ! Compute stiffness matrix Pd
-         m%qp%Pd(:,:,idx_qp,nelem) = 0.0_BDKi
-         m%qp%Pd(4:6,1:3,idx_qp,nelem) = SkewSymMat(ffd(1:3)) - MATMUL(b11,SS_ome)
-         m%qp%Pd(4:6,4:6,idx_qp,nelem) = -MATMUL(b12,SS_ome)
+         m%qp%Pd(idx_qp,:,:,    nelem) = 0.0_BDKi
+         m%qp%Pd(idx_qp,4:6,1:3,nelem) = SkewSymMat(ffd(1:3)) - MATMUL(b11,SS_ome)
+         m%qp%Pd(idx_qp,4:6,4:6,nelem) = -MATMUL(b12,SS_ome)
 
          ! Compute stiffness matrix Od
-         m%qp%Od(:,1:3,idx_qp,nelem) = 0.0_BDKi
+         m%qp%Od(idx_qp,:,1:3,nelem) = 0.0_BDKi
          alpha = SkewSymMat(m%qp%vvp(1:3,idx_qp,nelem)) - MATMUL(SS_ome,SkewSymMat(m%qp%E1(:,idx_qp,nelem)))
-         m%qp%Od(1:3,4:6,idx_qp,nelem) = MATMUL(D11,alpha) - SkewSymMat(ffd(1:3))
-         m%qp%Od(4:6,4:6,idx_qp,nelem) = MATMUL(D21,alpha) - SkewSymMat(ffd(4:6))
+         m%qp%Od(idx_qp,1:3,4:6,nelem) = MATMUL(D11,alpha) - SkewSymMat(ffd(1:3))
+         m%qp%Od(idx_qp,4:6,4:6,nelem) = MATMUL(D21,alpha) - SkewSymMat(ffd(4:6))
 
          ! Compute stiffness matrix Qd
-         m%qp%Qd(:,:,idx_qp,nelem)    = 0.0_BDKi
-         m%qp%Qd(4:6,4:6,idx_qp,nelem) = -MATMUL(SkewSymMat(m%qp%E1(:,idx_qp,nelem)),m%qp%Od(1:3,4:6,idx_qp,nelem))
+         m%qp%Qd(idx_qp,:,:,nelem)    = 0.0_BDKi
+         m%qp%Qd(idx_qp,4:6,4:6,nelem) = -MATMUL(SkewSymMat(m%qp%E1(:,idx_qp,nelem)),m%qp%Od(idx_qp,1:3,4:6,nelem))
          ! Compute gyroscopic matrix Gd
-         m%qp%Gd(:,1:3,idx_qp,nelem)   = 0.0_BDKi
-         m%qp%Gd(1:3,4:6,idx_qp,nelem) = TRANSPOSE(b11)
-         m%qp%Gd(4:6,4:6,idx_qp,nelem) = TRANSPOSE(b12)
+         m%qp%Gd(idx_qp,:,1:3,  nelem)   = 0.0_BDKi
+         m%qp%Gd(idx_qp,1:3,4:6,nelem) = TRANSPOSE(b11)
+         m%qp%Gd(idx_qp,4:6,4:6,nelem) = TRANSPOSE(b12)
 
          ! Compute gyroscopic matrix Xd
-         m%qp%Xd(:,:,idx_qp,nelem)    = 0.0_BDKi
-         m%qp%Xd(4:6,4:6,idx_qp,nelem) = -MATMUL(SkewSymMat(m%qp%E1(:,idx_qp,nelem)),m%qp%Gd(1:3,4:6,idx_qp,nelem))
+         m%qp%Xd(idx_qp,:,:,    nelem)    = 0.0_BDKi
+         m%qp%Xd(idx_qp,4:6,4:6,nelem) = -MATMUL(SkewSymMat(m%qp%E1(:,idx_qp,nelem)),m%qp%Gd(idx_qp,1:3,4:6,nelem))
 
          ! Compute gyroscopic matrix Yd
-         m%qp%Yd(1:3,:,idx_qp,nelem)   = 0.0_BDKi
-         m%qp%Yd(4:6,1:3,idx_qp,nelem) = b11
-         m%qp%Yd(4:6,4:6,idx_qp,nelem) = b12
+         m%qp%Yd(idx_qp,1:3,:,  nelem)   = 0.0_BDKi
+         m%qp%Yd(idx_qp,4:6,1:3,nelem) = b11
+         m%qp%Yd(idx_qp,4:6,4:6,nelem) = b12
       END DO   
    ENDIF
 
@@ -2649,10 +2649,10 @@ CONTAINS
       eed(1:3) = eed(1:3) + cross_product(m%qp%E1(:,idx_qp,nelem),m%qp%vvv(4:6,idx_qp,nelem))
 
       ! Compute dissipative force
-      ffd(1:6) = MATMUL(m%qp%betaC(:,:,idx_qp,nelem),eed)
+      ffd(1:6) = MATMUL(m%qp%betaC(idx_qp,:,:,nelem),eed)
 
-      m%qp%Fc(1:6,idx_qp,nelem) = m%qp%Fc(1:6,idx_qp,nelem) + ffd
-      m%qp%Fd(4:6,idx_qp,nelem) = m%qp%Fd(4:6,idx_qp,nelem) + cross_product(ffd(1:3),m%qp%E1(:,idx_qp,nelem))
+      m%qp%Fc(idx_qp,1:6,nelem) = m%qp%Fc(idx_qp,1:6,nelem) + ffd
+      m%qp%Fd(idx_qp,4:6,nelem) = m%qp%Fd(idx_qp,4:6,nelem) + cross_product(ffd(1:3),m%qp%E1(:,idx_qp,nelem))
    
    END SUBROUTINE Calc_FC_FD_ffd
 END SUBROUTINE BD_DissipativeForce
@@ -2669,8 +2669,8 @@ SUBROUTINE BD_GravityForce( nelem,p,m,grav )
 
    do idx_qp=1,p%nqp
 
-      m%qp%Fg(1:3,idx_qp,nelem) = p%qp%mmm(idx_qp,nelem) * grav(1:3)
-      m%qp%Fg(4:6,idx_qp,nelem) = cross_product(m%qp%RR0mEta(:,idx_qp,nelem),grav)
+      m%qp%Fg(idx_qp,1:3,nelem) = p%qp%mmm(idx_qp,nelem) * grav(1:3)
+      m%qp%Fg(idx_qp,4:6,nelem) = cross_product(m%qp%RR0mEta(:,idx_qp,nelem),grav)
 
    end do
    
@@ -2762,7 +2762,7 @@ SUBROUTINE BD_ElementMatrixAcc(  nelem, p, m )
             DO idx_dof1=1,p%dof_node
                m%elm(idx_dof1,i,idx_dof2,j) = 0.0_BDKi
                DO idx_qp = 1,p%nqp
-                  m%elm(idx_dof1,i,idx_dof2,j) = m%elm(idx_dof1,i,idx_dof2,j) + m%qp%Mi(idx_dof1,idx_dof2,idx_qp,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem)
+                  m%elm(idx_dof1,i,idx_dof2,j) = m%elm(idx_dof1,i,idx_dof2,j) + m%qp%Mi(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem)
                END DO                  
             ENDDO
          ENDDO
@@ -2774,11 +2774,11 @@ SUBROUTINE BD_ElementMatrixAcc(  nelem, p, m )
       
          m%elf(idx_dof1,i) = 0.0_BDKi
          DO idx_qp = 1,p%nqp ! dot_product(m%qp%Fc(idx_dof1,:,nelem),p%QPtw_ShpDer(:,i))
-            m%elf(idx_dof1,i) = m%elf(idx_dof1,i) - m%qp%Fc(idx_dof1,idx_qp,nelem)*p%QPtw_ShpDer(idx_qp,i)
+            m%elf(idx_dof1,i) = m%elf(idx_dof1,i) - m%qp%Fc(idx_qp,idx_dof1,nelem)*p%QPtw_ShpDer(idx_qp,i)
          END DO
             
          DO idx_qp = 1,p%nqp ! dot_product(m%qp%Ftemp(idx_dof1,:,nelem), p%QPtw_Shp_Jac(:,i,nelem))
-            m%elf(idx_dof1,i) = m%elf(idx_dof1,i) - m%qp%Ftemp(idx_dof1,idx_qp,nelem)*p%QPtw_Shp_Jac(idx_qp,i,nelem)
+            m%elf(idx_dof1,i) = m%elf(idx_dof1,i) - m%qp%Ftemp(idx_qp,idx_dof1,nelem)*p%QPtw_Shp_Jac(idx_qp,i,nelem)
          END DO
 
       ENDDO
@@ -2802,19 +2802,19 @@ SUBROUTINE BD_InertialMassMatrix( nelem, p, m )
 
    do idx_qp=1,p%nqp
 
-      m%qp%Mi(:,:,idx_qp,nelem) = 0.0_BDKi
+      m%qp%Mi(idx_qp,:,:,nelem) = 0.0_BDKi
 
          ! Set diagonal values for mass
       DO i=1,3
-          m%qp%Mi(i,i,idx_qp,nelem) = p%qp%mmm(idx_qp,nelem)
+          m%qp%Mi(idx_qp,i,i,nelem) = p%qp%mmm(idx_qp,nelem)
       ENDDO
 
          ! set mass-inertia coupling terms
-      m%qp%Mi(1:3,4:6,idx_qp,nelem) = -SkewSymMat(m%qp%RR0mEta(:,idx_qp,nelem))
-      m%qp%Mi(4:6,1:3,idx_qp,nelem) =  SkewSymMat(m%qp%RR0mEta(:,idx_qp,nelem))
+      m%qp%Mi(idx_qp,1:3,4:6,nelem) = -SkewSymMat(m%qp%RR0mEta(:,idx_qp,nelem))
+      m%qp%Mi(idx_qp,4:6,1:3,nelem) =  SkewSymMat(m%qp%RR0mEta(:,idx_qp,nelem))
 
          ! Set inertia terms
-      m%qp%Mi(4:6,4:6,idx_qp,nelem) = m%qp%rho(:,:,idx_qp,nelem)
+      m%qp%Mi(idx_qp,4:6,4:6,nelem) = m%qp%rho(:,:,idx_qp,nelem)
 
    end do
    
@@ -2845,8 +2845,8 @@ SUBROUTINE BD_GyroForce( nelem, p, m )
       gama = MATMUL(m%qp%rho(:,:,idx_qp,nelem),m%qp%vvv(4:6,idx_qp,nelem))
 
       !Compute Fb (Equation 22 in Wang_2014 with aaa = 0)
-      m%qp%Fb(1:3,idx_qp,nelem) = cross_product(m%qp%vvv(4:6,idx_qp,nelem), beta)
-      m%qp%Fb(4:6,idx_qp,nelem) = cross_product(m%qp%vvv(4:6,idx_qp,nelem), gama)
+      m%qp%Fb(idx_qp,1:3,nelem) = cross_product(m%qp%vvv(4:6,idx_qp,nelem), beta)
+      m%qp%Fb(idx_qp,4:6,nelem) = cross_product(m%qp%vvv(4:6,idx_qp,nelem), gama)
 
    end do
 
@@ -3515,17 +3515,17 @@ SUBROUTINE BD_StaticElementMatrix(  nelem, gravity, p, m )
             DO idx_dof1=1,p%dof_node
                m%elk(idx_dof1,i,idx_dof2,j) = 0.0_BDKi
                DO idx_qp = 1,p%nqp ! dot_product( m%qp%Qe(  idx_dof1,idx_dof2,:,nelem), p%QPtw_Shp_Shp_Jac(      :,i,j,nelem)) 
-                  m%elk(idx_dof1,i,idx_dof2,j) = m%elk(idx_dof1,i,idx_dof2,j) + m%qp%Qe(  idx_dof1,idx_dof2,idx_qp,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem)
+                  m%elk(idx_dof1,i,idx_dof2,j) = m%elk(idx_dof1,i,idx_dof2,j) + m%qp%Qe(  idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem)
                END DO
                   
                DO idx_qp = 1,p%nqp ! dot_product( m%qp%Pe(  idx_dof1,idx_dof2,:,nelem), p%QPtw_Shp_ShpDer(       :,i,j)      ) 
-                  m%elk(idx_dof1,i,idx_dof2,j) = m%elk(idx_dof1,i,idx_dof2,j) + m%qp%Pe(  idx_dof1,idx_dof2,idx_qp,nelem)*p%QPtw_Shp_ShpDer(idx_qp,i,j)
+                  m%elk(idx_dof1,i,idx_dof2,j) = m%elk(idx_dof1,i,idx_dof2,j) + m%qp%Pe(  idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,i,j)
                END DO
                DO idx_qp = 1,p%nqp ! dot_product( m%qp%Oe(  idx_dof1,idx_dof2,:,nelem), p%QPtw_Shp_ShpDer(       :,j,i)      ) 
-                  m%elk(idx_dof1,i,idx_dof2,j) = m%elk(idx_dof1,i,idx_dof2,j) + m%qp%Oe(  idx_dof1,idx_dof2,idx_qp,nelem)*p%QPtw_Shp_ShpDer(idx_qp,j,i)
+                  m%elk(idx_dof1,i,idx_dof2,j) = m%elk(idx_dof1,i,idx_dof2,j) + m%qp%Oe(  idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,j,i)
                END DO
                DO idx_qp = 1,p%nqp ! dot_product( m%qp%Stif(idx_dof1,idx_dof2,:,nelem), p%QPtw_ShpDer_ShpDer_Jac(:,i,j,nelem))
-                  m%elk(idx_dof1,i,idx_dof2,j) = m%elk(idx_dof1,i,idx_dof2,j) + m%qp%Stif(idx_dof1,idx_dof2,idx_qp,nelem)*p%QPtw_ShpDer_ShpDer_Jac(idx_qp,i,j,nelem)
+                  m%elk(idx_dof1,i,idx_dof2,j) = m%elk(idx_dof1,i,idx_dof2,j) + m%qp%Stif(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_ShpDer_ShpDer_Jac(idx_qp,i,j,nelem)
                END DO
             ENDDO
          ENDDO
@@ -3536,10 +3536,10 @@ SUBROUTINE BD_StaticElementMatrix(  nelem, gravity, p, m )
       DO idx_dof1=1,p%dof_node
          m%elf(idx_dof1,i) = 0.0_BDKi
          DO idx_qp = 1,p%nqp ! dot_product( m%qp%Fc  (idx_dof1,:,nelem), p%QPtw_ShpDer( :,i))
-            m%elf(idx_dof1,i) = m%elf(idx_dof1,i) - m%qp%Fc  (idx_dof1,idx_qp,nelem)*p%QPtw_ShpDer(idx_qp,i)
+            m%elf(idx_dof1,i) = m%elf(idx_dof1,i) - m%qp%Fc  (idx_qp,idx_dof1,nelem)*p%QPtw_ShpDer(idx_qp,i)
          END DO
          DO idx_qp = 1,p%nqp ! dot_product(m%qp%Ftemp(idx_dof1,:,nelem), p%QPtw_Shp_Jac(:,i,nelem) )
-            m%elf(idx_dof1,i) = m%elf(idx_dof1,i) - m%qp%Ftemp(idx_dof1,idx_qp,nelem)*p%QPtw_Shp_Jac(idx_qp,i,nelem)
+            m%elf(idx_dof1,i) = m%elf(idx_dof1,i) - m%qp%Ftemp(idx_qp,idx_dof1,nelem)*p%QPtw_Shp_Jac(idx_qp,i,nelem)
          END DO
       ENDDO
    ENDDO
@@ -3586,12 +3586,12 @@ SUBROUTINE BD_InternalForceMoment( x, p, m )
          DO idx_qp=p%nqp,1,-1
                ! Force contributions from current node
             m%EFint(1:3,i,nelem) =  m%EFint(1:3,i,nelem) &
-                                 +  m%qp%Fc(1:3,idx_qp,nelem)*p%QPtw_ShpDer(idx_qp,i)
+                 +  m%qp%Fc(idx_qp,1:3,nelem)*p%QPtw_ShpDer(idx_qp,i)
 
                ! Moment contributions from current node
             m%EFint(4:6,i,nelem) =  m%EFint(4:6,i,nelem) &
-                                 +  m%qp%Fc(4:6,idx_qp,nelem)*p%QPtw_ShpDer( idx_qp,i)  &
-                                 +  m%qp%Fd(4:6,idx_qp,nelem)*p%QPtw_Shp_Jac(idx_qp,i,nelem)   ! Fd only contains moments
+                 +  m%qp%Fc(idx_qp,4:6,nelem)*p%QPtw_ShpDer( idx_qp,i)  &
+                 +  m%qp%Fd(idx_qp,4:6,nelem)*p%QPtw_Shp_Jac(idx_qp,i,nelem)   ! Fd only contains moments
          ENDDO
       ENDDO
    ENDDO
@@ -4112,6 +4112,13 @@ SUBROUTINE BD_ElementMatrixGA2(  fact, nelem, p, m )
    INTEGER(IntKi)               :: idx_dof1
    INTEGER(IntKi)               :: idx_dof2
    CHARACTER(*), PARAMETER      :: RoutineName = 'BD_ElementMatrixGA2'
+   REAL(BDKi) :: damp_mult_fac
+
+   if (p%damp_flag .NE. 0) then
+      damp_mult_fac = 1.0_BDKi
+   else
+      damp_mult_fac = 0.0_BDKi
+   end if
    
 
 !FIXME: adp: I don't see the gyroscopic term in here.  That is stored in m%qp%Fb
@@ -4133,109 +4140,57 @@ SUBROUTINE BD_ElementMatrixGA2(  fact, nelem, p, m )
 
       ! Equations 10, 11, 12 in Wang_2014
 
-   IF (fact) THEN  
+   IF (fact) THEN
       DO j=1,p%nodes_per_elem
          DO idx_dof2=1,p%dof_node
             DO i=1,p%nodes_per_elem
                DO idx_dof1=1,p%dof_node
-                  
-                  m%elk(idx_dof1,i,idx_dof2,j) = 0.0_BDKi
-                  DO idx_qp = 1,p%nqp ! dot_product(m%qp%Qe(  idx_dof1,idx_dof2,:,nelem) +  m%qp%Ki(idx_dof1,idx_dof2,:,nelem), p%QPtw_Shp_Shp_Jac(      :,i,j,nelem) )
-                     m%elk(idx_dof1,i,idx_dof2,j) =  m%elk(idx_dof1,i,idx_dof2,j) + (m%qp%Qe(idx_dof1,idx_dof2,idx_qp,nelem) +  m%qp%Ki(idx_dof1,idx_dof2,idx_qp,nelem))*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem)
-                  END DO
-                  DO idx_qp = 1,p%nqp ! dot_product(m%qp%Pe(  idx_dof1,idx_dof2,:,nelem)                                      , p%QPtw_Shp_ShpDer(       :,i,j) )
-                     m%elk(idx_dof1,i,idx_dof2,j) = m%elk(idx_dof1,i,idx_dof2,j) +  m%qp%Pe(  idx_dof1,idx_dof2,idx_qp,nelem)*p%QPtw_Shp_ShpDer(idx_qp,i,j)
-                  END DO
-                  DO idx_qp = 1,p%nqp ! dot_product(m%qp%Oe(  idx_dof1,idx_dof2,:,nelem)                                      , p%QPtw_Shp_ShpDer(       :,j,i) )
-                     m%elk(idx_dof1,i,idx_dof2,j) = m%elk(idx_dof1,i,idx_dof2,j) +  m%qp%Oe(  idx_dof1,idx_dof2,idx_qp,nelem)*p%QPtw_Shp_ShpDer(idx_qp,j,i)
-                  END DO
-                  DO idx_qp = 1,p%nqp ! dot_product(m%qp%Stif(idx_dof1,idx_dof2,:,nelem)                                      , p%QPtw_ShpDer_ShpDer_Jac(:,i,j,nelem) )
-                     m%elk(idx_dof1,i,idx_dof2,j) = m%elk(idx_dof1,i,idx_dof2,j) +  m%qp%Stif(idx_dof1,idx_dof2,idx_qp,nelem)*p%QPtw_ShpDer_ShpDer_Jac(idx_qp,i,j,nelem)
-                  END DO
-                  
+                  m%elk(idx_dof1, i, idx_dof2, j) = &
+                       dot_product( &
+                       (m%qp%Qe(:, idx_dof1, idx_dof2, nelem) &
+                       + m%qp%Ki(:, idx_dof1, idx_dof2, nelem) &
+                       + damp_mult_fac * m%qp%Qd(:, idx_dof1, idx_dof2,nelem)), &
+                       p%QPtw_Shp_Shp_Jac(:, i, j, nelem)) + &
+                       dot_product( &
+                       (m%qp%Pe(:, idx_dof1, idx_dof2, nelem) + damp_mult_fac * m%qp%Pd(:, idx_dof1, idx_dof2, nelem)), p%QPtw_Shp_ShpDer(:, i, j)) + &
+                       dot_product( &
+                       (m%qp%Oe(:, idx_dof1, idx_dof2, nelem) + damp_mult_fac * m%qp%Od(:, idx_dof1, idx_dof2, nelem)), p%QPtw_Shp_ShpDer(:, j, i)) + &
+                       dot_product( &
+                       (m%qp%Stif(:, idx_dof1, idx_dof2, nelem) + damp_mult_fac * m%qp%Sd(:, idx_dof1, idx_dof2, nelem)), p%QPtw_ShpDer_ShpDer_Jac(:, i, j, nelem))
+
+                  m%elm(idx_dof1, i, idx_dof2, j) = dot_product( &
+                       m%qp%Mi(:, idx_dof1, idx_dof2, nelem), p%QPtw_Shp_Shp_Jac(:, i, j, nelem))
+
+                  m%elg(idx_dof1, i, idx_dof2, j) = &
+                       dot_product((m%qp%Gi(:, idx_dof1, idx_dof2, nelem) + damp_mult_fac * m%qp%Xd(:, idx_dof1, idx_dof2, nelem)), p%QPtw_Shp_Shp_Jac(:, i, j, nelem)) + &
+                       damp_mult_fac * (&
+                       dot_product(m%qp%Yd(:, idx_dof1, idx_dof2, nelem), p%QPtw_Shp_ShpDer(:, i, j)) + &
+                       dot_product(m%qp%Gd(:, idx_dof1, idx_dof2, nelem), p%QPtw_Shp_ShpDer(:, i, j)) + &
+                       dot_product(m%qp%betaC(:, idx_dof1, idx_dof2, nelem), p%QPtw_ShpDer_ShpDer_Jac(:, i, j, nelem)))
+
+                     ! m%elk(idx_dof1,i,idx_dof2,j) =  m%elk(idx_dof1,i,idx_dof2,j) &
+                     !      + (m%qp%Qe(idx_qp,idx_dof1,idx_dof2,nelem) +  m%qp%Ki(idx_qp,idx_dof1,idx_dof2,nelem))*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem) &
+                     !      +  m%qp%Pe(  idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,i,j) &
+                     !      +  m%qp%Oe(  idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,j,i) &
+                     !      +  m%qp%Stif(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_ShpDer_ShpDer_Jac(idx_qp,i,j,nelem) &
+                     !      + damp_mult_fac * &
+                     !      ( m%qp%Qd(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem) &
+                     !      + m%qp%Pd(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,i,j) &
+                     !      + m%qp%Od(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,j,i) &
+                     !      + m%qp%Sd(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_ShpDer_ShpDer_Jac(idx_qp,i,j,nelem))
+
+                     ! m%elm(idx_dof1,i,idx_dof2,j) = m%elm(idx_dof1,i,idx_dof2,j) + m%qp%Mi(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem)
+
+                     ! m%elg(idx_dof1,i,idx_dof2,j) = m%elg(idx_dof1,i,idx_dof2,j) + m%qp%Gi(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem) &
+                     !      + damp_mult_fac * &
+                     !      ( m%qp%Xd(   idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem) &
+                     !      + m%qp%Yd(   idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,i,j) &
+                     !      + m%qp%Gd(   idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,j,i) &
+                     !      + m%qp%betaC(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_ShpDer_ShpDer_Jac(idx_qp,i,j,nelem))
                ENDDO
             ENDDO
          ENDDO
       END DO
-
-      DO j=1,p%nodes_per_elem
-         DO idx_dof2=1,p%dof_node
-            DO i=1,p%nodes_per_elem
-               DO idx_dof1=1,p%dof_node
-                  
-                  m%elm(idx_dof1,i,idx_dof2,j) = 0.0_BDKi
-                  DO idx_qp = 1,p%nqp ! dot_product( m%qp%Mi(idx_dof1,idx_dof2,:,nelem), p%QPtw_Shp_Shp_Jac(:,i,j,nelem) )
-                     m%elm(idx_dof1,i,idx_dof2,j) = m%elm(idx_dof1,i,idx_dof2,j) + m%qp%Mi(idx_dof1,idx_dof2,idx_qp,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem)
-                  END DO
-                  
-               ENDDO
-            ENDDO
-         ENDDO
-      END DO
-
-      DO j=1,p%nodes_per_elem
-         DO idx_dof2=1,p%dof_node
-            DO i=1,p%nodes_per_elem
-               DO idx_dof1=1,p%dof_node
-                  
-                  m%elg(idx_dof1,i,idx_dof2,j) = 0.0_BDKi
-                  DO idx_qp = 1,p%nqp ! dot_product( m%qp%Gi(idx_dof1,idx_dof2,:,nelem), p%QPtw_Shp_Shp_Jac(:,i,j,nelem))
-                     m%elg(idx_dof1,i,idx_dof2,j) = m%elg(idx_dof1,i,idx_dof2,j) + m%qp%Gi(idx_dof1,idx_dof2,idx_qp,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem)
-                  END DO
-                  
-               ENDDO
-            ENDDO
-         ENDDO
-      END DO
-   
-         ! Dissipative terms
-      IF (p%damp_flag .NE. 0) THEN
-         DO j=1,p%nodes_per_elem
-            DO idx_dof2=1,p%dof_node
-               DO i=1,p%nodes_per_elem
-                  DO idx_dof1=1,p%dof_node
-                     
-                     DO idx_qp = 1,p%nqp ! dot_product(m%qp%Qd(idx_dof1,idx_dof2,:,nelem), p%QPtw_Shp_Shp_Jac(      :,i,j,nelem))
-                        m%elk(idx_dof1,i,idx_dof2,j) = m%elk(idx_dof1,i,idx_dof2,j) + m%qp%Qd(idx_dof1,idx_dof2,idx_qp,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem)
-                     END DO
-                     DO idx_qp = 1,p%nqp ! dot_product(m%qp%Pd(idx_dof1,idx_dof2,:,nelem), p%QPtw_Shp_ShpDer(       :,i,j)      )
-                        m%elk(idx_dof1,i,idx_dof2,j) = m%elk(idx_dof1,i,idx_dof2,j) + m%qp%Pd(idx_dof1,idx_dof2,idx_qp,nelem)*p%QPtw_Shp_ShpDer(idx_qp,i,j)
-                     END DO 
-                     DO idx_qp = 1,p%nqp ! dot_product(m%qp%Od(idx_dof1,idx_dof2,:,nelem), p%QPtw_Shp_ShpDer(       :,j,i)      )
-                        m%elk(idx_dof1,i,idx_dof2,j) = m%elk(idx_dof1,i,idx_dof2,j) + m%qp%Od(idx_dof1,idx_dof2,idx_qp,nelem)*p%QPtw_Shp_ShpDer(idx_qp,j,i)
-                     END DO
-                     DO idx_qp = 1,p%nqp ! dot_product(m%qp%Sd(idx_dof1,idx_dof2,:,nelem), p%QPtw_ShpDer_ShpDer_Jac(:,i,j,nelem))
-                        m%elk(idx_dof1,i,idx_dof2,j) = m%elk(idx_dof1,i,idx_dof2,j) + m%qp%Sd(idx_dof1,idx_dof2,idx_qp,nelem)*p%QPtw_ShpDer_ShpDer_Jac(idx_qp,i,j,nelem)
-                     END DO
-                     
-                  ENDDO
-               ENDDO
-            ENDDO
-         END DO
-
-         DO j=1,p%nodes_per_elem
-            DO idx_dof2=1,p%dof_node
-               DO i=1,p%nodes_per_elem
-                  DO idx_dof1=1,p%dof_node
-                     
-                     DO idx_qp = 1,p%nqp ! dot_product(m%qp%Xd(   idx_dof1,idx_dof2,:,nelem), p%QPtw_Shp_Shp_Jac(      :,i,j,nelem))
-                        m%elg(idx_dof1,i,idx_dof2,j) = m%elg(idx_dof1,i,idx_dof2,j) + m%qp%Xd(   idx_dof1,idx_dof2,idx_qp,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem)
-                     END DO
-                     DO idx_qp = 1,p%nqp ! dot_product(m%qp%Yd(   idx_dof1,idx_dof2,:,nelem), p%QPtw_Shp_ShpDer(       :,i,j)      )
-                        m%elg(idx_dof1,i,idx_dof2,j) = m%elg(idx_dof1,i,idx_dof2,j) + m%qp%Yd(   idx_dof1,idx_dof2,idx_qp,nelem)*p%QPtw_Shp_ShpDer(idx_qp,i,j)
-                     END DO
-                     DO idx_qp = 1,p%nqp ! dot_product(m%qp%Gd(   idx_dof1,idx_dof2,:,nelem), p%QPtw_Shp_ShpDer(       :,j,i)      )
-                        m%elg(idx_dof1,i,idx_dof2,j) = m%elg(idx_dof1,i,idx_dof2,j) + m%qp%Gd(   idx_dof1,idx_dof2,idx_qp,nelem)*p%QPtw_Shp_ShpDer(idx_qp,j,i)
-                     END DO
-                     DO idx_qp = 1,p%nqp ! dot_product(m%qp%betaC(idx_dof1,idx_dof2,:,nelem), p%QPtw_ShpDer_ShpDer_Jac(:,i,j,nelem))
-                        m%elg(idx_dof1,i,idx_dof2,j) = m%elg(idx_dof1,i,idx_dof2,j) + m%qp%betaC(idx_dof1,idx_dof2,idx_qp,nelem)*p%QPtw_ShpDer_ShpDer_Jac(idx_qp,i,j,nelem)
-                     END DO
-                     
-                  ENDDO
-               ENDDO
-            ENDDO
-         END DO         
-      ENDIF ! add the dissipative terms
 
    ENDIF
    
@@ -4243,14 +4198,10 @@ SUBROUTINE BD_ElementMatrixGA2(  fact, nelem, p, m )
 
    DO i=1,p%nodes_per_elem
       DO idx_dof1=1,p%dof_node
-         
-         m%elf(idx_dof1,i) = 0.0_BDKi
-         DO idx_qp = 1,p%nqp ! dot_product( m%qp%Fc   (idx_dof1,:,nelem),                             p%QPtw_ShpDer( :,i))
-            m%elf(idx_dof1,i) = m%elf(idx_dof1,i) - m%qp%Fc(idx_dof1,idx_qp,nelem)*p%QPtw_ShpDer(idx_qp,i)
-         END DO
-         DO idx_qp = 1,p%nqp ! dot_product( m%qp%Ftemp(idx_dof1,:,nelem) + m%qp%Fi(idx_dof1,:,nelem), p%QPtw_Shp_Jac(:,i,nelem))
-            m%elf(idx_dof1,i) = m%elf(idx_dof1,i) - (m%qp%Ftemp(idx_dof1,idx_qp,nelem) + m%qp%Fi(idx_dof1,idx_qp,nelem))*p%QPtw_Shp_Jac(idx_qp,i,nelem)
-         END DO
+         m%elf(idx_dof1, i) = &
+              - dot_product(m%qp%Fc(:, idx_dof1, nelem), p%QPtw_ShpDer(:, i)) &
+              - dot_product((m%qp%Ftemp(:, idx_dof1, nelem) + m%qp%Fi(:, idx_dof1, nelem)), &
+                p%Qptw_Shp_Jac(:, i, nelem))
       ENDDO
    ENDDO
    
