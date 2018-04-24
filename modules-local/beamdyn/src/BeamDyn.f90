@@ -4148,22 +4148,25 @@ SUBROUTINE BD_ElementMatrixGA2(  fact, nelem, p, m )
                   m%elk(idx_dof1, i, idx_dof2, j) = &
                        dot_product( &
                        (m%qp%Qe(:, idx_dof1, idx_dof2, nelem) &
-                       + m%qp%Ki(:, idx_dof1, idx_dof2, nelem) &
-                       + damp_mult_fac * m%qp%Qd(:, idx_dof1, idx_dof2,nelem)), &
+                       + m%qp%Ki(:, idx_dof1, idx_dof2, nelem)), &
                        p%QPtw_Shp_Shp_Jac(:, i, j, nelem)) + &
-                       dot_product( &
-                       (m%qp%Pe(:, idx_dof1, idx_dof2, nelem) + damp_mult_fac * m%qp%Pd(:, idx_dof1, idx_dof2, nelem)), p%QPtw_Shp_ShpDer(:, i, j)) + &
-                       dot_product( &
-                       (m%qp%Oe(:, idx_dof1, idx_dof2, nelem) + damp_mult_fac * m%qp%Od(:, idx_dof1, idx_dof2, nelem)), p%QPtw_Shp_ShpDer(:, j, i)) + &
-                       dot_product( &
-                       (m%qp%Stif(:, idx_dof1, idx_dof2, nelem) + damp_mult_fac * m%qp%Sd(:, idx_dof1, idx_dof2, nelem)), p%QPtw_ShpDer_ShpDer_Jac(:, i, j, nelem))
+                       dot_product(m%qp%Pe(:, idx_dof1, idx_dof2, nelem), p%QPtw_Shp_ShpDer(:, i, j)) + &
+                       dot_product(m%qp%Oe(:, idx_dof1, idx_dof2, nelem), p%QPtw_Shp_ShpDer(:, j, i)) + &
+                       dot_product(m%qp%Stif(:, idx_dof1, idx_dof2, nelem), p%QPtw_ShpDer_ShpDer_Jac(:, i, j, nelem)) &
+                       + damp_mult_fac * ( &
+                       dot_product(m%qp%Qd(:, idx_dof1, idx_dof2,nelem), p%QPtw_Shp_Shp_Jac(:, i, j, nelem)) + &
+                       dot_product(m%qp%Pd(:, idx_dof1, idx_dof2,nelem), p%QPtw_Shp_ShpDer(:, i, j)) + &
+                       dot_product(m%qp%Od(:, idx_dof1, idx_dof2,nelem), p%QPtw_Shp_ShpDer(:, j, i)) + &
+                       dot_product(m%qp%Sd(:, idx_dof1, idx_dof2,nelem), p%QPtw_ShpDer_ShpDer_Jac(:, i, j, nelem)))
+
 
                   m%elm(idx_dof1, i, idx_dof2, j) = dot_product( &
                        m%qp%Mi(:, idx_dof1, idx_dof2, nelem), p%QPtw_Shp_Shp_Jac(:, i, j, nelem))
 
                   m%elg(idx_dof1, i, idx_dof2, j) = &
-                       dot_product((m%qp%Gi(:, idx_dof1, idx_dof2, nelem) + damp_mult_fac * m%qp%Xd(:, idx_dof1, idx_dof2, nelem)), p%QPtw_Shp_Shp_Jac(:, i, j, nelem)) + &
+                       dot_product(m%qp%Gi(:, idx_dof1, idx_dof2, nelem), p%QPtw_Shp_Shp_Jac(:, i, j, nelem)) + &
                        damp_mult_fac * (&
+                       dot_product(m%qp%Xd(:, idx_dof1, idx_dof2, nelem), p%QPtw_Shp_Shp_Jac(:, i, j, nelem)) + &
                        dot_product(m%qp%Yd(:, idx_dof1, idx_dof2, nelem), p%QPtw_Shp_ShpDer(:, i, j)) + &
                        dot_product(m%qp%Gd(:, idx_dof1, idx_dof2, nelem), p%QPtw_Shp_ShpDer(:, i, j)) + &
                        dot_product(m%qp%betaC(:, idx_dof1, idx_dof2, nelem), p%QPtw_ShpDer_ShpDer_Jac(:, i, j, nelem)))
