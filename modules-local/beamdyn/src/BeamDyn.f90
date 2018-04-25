@@ -16,7 +16,6 @@
 ! limitations under the License.
 !**********************************************************************************************************************************
 MODULE BeamDyn
-
    USE BeamDyn_IO
    USE BeamDyn_Subs
    !USE NWTC_LAPACK inherited from BeamDyn_Subs and BeamDyn_IO
@@ -2186,6 +2185,7 @@ SUBROUTINE BD_ElasticForce(nelem,p,m,fact)
       
    else
    
+      !$OMP PARALLEL DO
       do idx_qp=1,p%nqp
       
          call Calc_Fc_Fd()
@@ -2248,6 +2248,7 @@ SUBROUTINE BD_ElasticForce(nelem,p,m,fact)
          m%qp%Qe(idx_qp,:,:,    nelem)     = 0.0_BDKi
          m%qp%Qe(idx_qp,4:6,4:6,nelem) = -MATMUL(tildeE,m%qp%Oe(idx_qp,1:3,4:6,nelem))
       end do
+      !$OMP END PARALLEL DO
       
    ENDIF
 
@@ -2509,6 +2510,7 @@ SUBROUTINE BD_InertialForce( nelem, p, m, fact )
    
    IF(fact) THEN
       CALL BD_InertialMassMatrix( nelem, p, m ) ! compute Mi
+      !$OMP PARALLEL DO
       do idx_qp=1,p%nqp
 
           !Gyroscopic Matrix (Equation 17 in Wang_2014)
@@ -2534,6 +2536,7 @@ SUBROUTINE BD_InertialForce( nelem, p, m, fact )
                                         +  MATMUL(epsi,SSmat_vvv)             &
                                         -  MATMUL(SSmat_vvv,SkewSymMat(gama))
       end do
+      !$OMP END PARALLEL DO
    ENDIF
 
 END SUBROUTINE BD_InertialForce
@@ -2562,14 +2565,15 @@ SUBROUTINE BD_DissipativeForce( nelem, p, m,fact )
 
    INTEGER(IntKi)              :: idx_qp      !< index of current quadrature point
    
-   DO idx_qp=1,p%nqp
-      !m%qp%betaC(:,:,idx_qp,nelem) = MATMUL( diag(p%beta(i)), temp_b,m%qp%Stif(:,:,idx_qp,nelem))
-      DO j=1,6
-         DO i=1,6
+   !$OMP PARALLEL DO collapse(3)
+   DO j=1,6
+      DO i=1,6
+         DO idx_qp=1,p%nqp
             m%qp%betaC(idx_qp,i,j,nelem) = p%beta(i)*m%qp%Stif(idx_qp,i,j,nelem)
          END DO
       END DO
    END DO
+   !$OMP END PARALLEL DO
 
    
    IF (.NOT. fact) then ! skip all but Fc and Fd terms
@@ -2590,6 +2594,7 @@ SUBROUTINE BD_DissipativeForce( nelem, p, m,fact )
   ELSE 
 !FIXME:  sometime we can condense this with vector arithmetic and removing some variables that aren't needed.
    
+      !$OMP PARALLEL DO
       DO idx_qp=1,p%nqp      
 
          CALL Calc_FC_FD_ffd()  ! this sets local variable ffd and modifies m%qp%Fc and m%qp%Fd
@@ -2637,7 +2642,8 @@ SUBROUTINE BD_DissipativeForce( nelem, p, m,fact )
          m%qp%Yd(idx_qp,1:3,:,  nelem)   = 0.0_BDKi
          m%qp%Yd(idx_qp,4:6,1:3,nelem) = b11
          m%qp%Yd(idx_qp,4:6,4:6,nelem) = b12
-      END DO   
+      END DO
+      !$OMP END PARALLEL DO
    ENDIF
 
 CONTAINS
@@ -2756,33 +2762,34 @@ SUBROUTINE BD_ElementMatrixAcc(  nelem, p, m )
    
    CALL BD_InertialMassMatrix( nelem, p, m )                   ! Calculate Mi
    
+   !$OMP PARALLEL DO collapse(4)
    DO j=1,p%nodes_per_elem
       DO idx_dof2=1,p%dof_node
          DO i=1,p%nodes_per_elem
             DO idx_dof1=1,p%dof_node
                m%elm(idx_dof1,i,idx_dof2,j) = 0.0_BDKi
                DO idx_qp = 1,p%nqp
-                  m%elm(idx_dof1,i,idx_dof2,j) = m%elm(idx_dof1,i,idx_dof2,j) + m%qp%Mi(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem)
+                  m%elm(idx_dof1,i,idx_dof2,j) = m%elm(idx_dof1,i,idx_dof2,j) &
+                       + m%qp%Mi(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem)
                END DO                  
             ENDDO
          ENDDO
       ENDDO
-   end do
-   
+   ENDDO
+   !$OMP END PARALLEL DO
+
+   !$OMP PARALLEL DO collapse(2)
    DO i=1,p%nodes_per_elem
       DO idx_dof1=1,p%dof_node
-      
          m%elf(idx_dof1,i) = 0.0_BDKi
-         DO idx_qp = 1,p%nqp ! dot_product(m%qp%Fc(idx_dof1,:,nelem),p%QPtw_ShpDer(:,i))
-            m%elf(idx_dof1,i) = m%elf(idx_dof1,i) - m%qp%Fc(idx_qp,idx_dof1,nelem)*p%QPtw_ShpDer(idx_qp,i)
+         DO idx_qp = 1,p%nqp
+            m%elf(idx_dof1,i) = m%elf(idx_dof1,i) &
+                 - m%qp%Fc(idx_qp,idx_dof1,nelem)*p%QPtw_ShpDer(idx_qp,i) &
+                 - m%qp%Ftemp(idx_qp,idx_dof1,nelem)*p%QPtw_Shp_Jac(idx_qp,i,nelem)
          END DO
-            
-         DO idx_qp = 1,p%nqp ! dot_product(m%qp%Ftemp(idx_dof1,:,nelem), p%QPtw_Shp_Jac(:,i,nelem))
-            m%elf(idx_dof1,i) = m%elf(idx_dof1,i) - m%qp%Ftemp(idx_qp,idx_dof1,nelem)*p%QPtw_Shp_Jac(idx_qp,i,nelem)
-         END DO
-
       ENDDO
    ENDDO
+   !$OMP END PARALLEL DO
    
    RETURN
 END SUBROUTINE BD_ElementMatrixAcc
@@ -3509,40 +3516,39 @@ SUBROUTINE BD_StaticElementMatrix(  nelem, gravity, p, m )
 
    m%qp%Ftemp(:,:,nelem) = m%qp%Fd(:,:,nelem) - m%qp%Fg(:,:,nelem) - m%DistrLoad_QP(:,:,nelem)
    
+   !$OMP PARALLEL
+   !$OMP DO collapse(4)
    DO j=1,p%nodes_per_elem
       DO idx_dof2=1,p%dof_node
          DO i=1,p%nodes_per_elem
             DO idx_dof1=1,p%dof_node
                m%elk(idx_dof1,i,idx_dof2,j) = 0.0_BDKi
-               DO idx_qp = 1,p%nqp ! dot_product( m%qp%Qe(  idx_dof1,idx_dof2,:,nelem), p%QPtw_Shp_Shp_Jac(      :,i,j,nelem)) 
-                  m%elk(idx_dof1,i,idx_dof2,j) = m%elk(idx_dof1,i,idx_dof2,j) + m%qp%Qe(  idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem)
-               END DO
-                  
-               DO idx_qp = 1,p%nqp ! dot_product( m%qp%Pe(  idx_dof1,idx_dof2,:,nelem), p%QPtw_Shp_ShpDer(       :,i,j)      ) 
-                  m%elk(idx_dof1,i,idx_dof2,j) = m%elk(idx_dof1,i,idx_dof2,j) + m%qp%Pe(  idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,i,j)
-               END DO
-               DO idx_qp = 1,p%nqp ! dot_product( m%qp%Oe(  idx_dof1,idx_dof2,:,nelem), p%QPtw_Shp_ShpDer(       :,j,i)      ) 
-                  m%elk(idx_dof1,i,idx_dof2,j) = m%elk(idx_dof1,i,idx_dof2,j) + m%qp%Oe(  idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,j,i)
-               END DO
-               DO idx_qp = 1,p%nqp ! dot_product( m%qp%Stif(idx_dof1,idx_dof2,:,nelem), p%QPtw_ShpDer_ShpDer_Jac(:,i,j,nelem))
-                  m%elk(idx_dof1,i,idx_dof2,j) = m%elk(idx_dof1,i,idx_dof2,j) + m%qp%Stif(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_ShpDer_ShpDer_Jac(idx_qp,i,j,nelem)
+               DO idx_qp = 1,p%nqp
+                  m%elk(idx_dof1,i,idx_dof2,j) = m%elk(idx_dof1,i,idx_dof2,j) &
+                       + m%qp%Qe(  idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem) &
+                       + m%qp%Pe(  idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,i,j) &
+                       + m%qp%Oe(  idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,j,i) &
+                       + m%qp%Stif(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_ShpDer_ShpDer_Jac(idx_qp,i,j,nelem)
                END DO
             ENDDO
          ENDDO
       ENDDO
    ENDDO
+   !$OMP END DO
 
+   !$OMP DO collapse(2)
    DO i=1,p%nodes_per_elem
       DO idx_dof1=1,p%dof_node
          m%elf(idx_dof1,i) = 0.0_BDKi
-         DO idx_qp = 1,p%nqp ! dot_product( m%qp%Fc  (idx_dof1,:,nelem), p%QPtw_ShpDer( :,i))
-            m%elf(idx_dof1,i) = m%elf(idx_dof1,i) - m%qp%Fc  (idx_qp,idx_dof1,nelem)*p%QPtw_ShpDer(idx_qp,i)
-         END DO
-         DO idx_qp = 1,p%nqp ! dot_product(m%qp%Ftemp(idx_dof1,:,nelem), p%QPtw_Shp_Jac(:,i,nelem) )
-            m%elf(idx_dof1,i) = m%elf(idx_dof1,i) - m%qp%Ftemp(idx_qp,idx_dof1,nelem)*p%QPtw_Shp_Jac(idx_qp,i,nelem)
+         DO idx_qp = 1,p%nqp
+            m%elf(idx_dof1,i) = m%elf(idx_dof1,i) &
+                 - m%qp%Fc  (idx_qp,idx_dof1,nelem)*p%QPtw_ShpDer(idx_qp,i) &
+                 - m%qp%Ftemp(idx_qp,idx_dof1,nelem)*p%QPtw_Shp_Jac(idx_qp,i,nelem)
          END DO
       ENDDO
    ENDDO
+   !$OMP END DO
+   !$OMP END PARALLEL
 
    RETURN
 
@@ -4141,72 +4147,58 @@ SUBROUTINE BD_ElementMatrixGA2(  fact, nelem, p, m )
       ! Equations 10, 11, 12 in Wang_2014
 
    IF (fact) THEN
+      !$OMP PARALLEL DO collapse(4)
       DO j=1,p%nodes_per_elem
          DO idx_dof2=1,p%dof_node
             DO i=1,p%nodes_per_elem
                DO idx_dof1=1,p%dof_node
-                  m%elk(idx_dof1, i, idx_dof2, j) = &
-                       dot_product( &
-                       (m%qp%Qe(:, idx_dof1, idx_dof2, nelem) &
-                       + m%qp%Ki(:, idx_dof1, idx_dof2, nelem)), &
-                       p%QPtw_Shp_Shp_Jac(:, i, j, nelem)) + &
-                       dot_product(m%qp%Pe(:, idx_dof1, idx_dof2, nelem), p%QPtw_Shp_ShpDer(:, i, j)) + &
-                       dot_product(m%qp%Oe(:, idx_dof1, idx_dof2, nelem), p%QPtw_Shp_ShpDer(:, j, i)) + &
-                       dot_product(m%qp%Stif(:, idx_dof1, idx_dof2, nelem), p%QPtw_ShpDer_ShpDer_Jac(:, i, j, nelem)) &
-                       + damp_mult_fac * ( &
-                       dot_product(m%qp%Qd(:, idx_dof1, idx_dof2,nelem), p%QPtw_Shp_Shp_Jac(:, i, j, nelem)) + &
-                       dot_product(m%qp%Pd(:, idx_dof1, idx_dof2,nelem), p%QPtw_Shp_ShpDer(:, i, j)) + &
-                       dot_product(m%qp%Od(:, idx_dof1, idx_dof2,nelem), p%QPtw_Shp_ShpDer(:, j, i)) + &
-                       dot_product(m%qp%Sd(:, idx_dof1, idx_dof2,nelem), p%QPtw_ShpDer_ShpDer_Jac(:, i, j, nelem)))
+                  m%elk(idx_dof1, i, idx_dof2, j) = 0.0_BDKi
+                  m%elg(idx_dof1, i, idx_dof2, j) = 0.0_BDKi
+                  m%elm(idx_dof1, i, idx_dof2, j) = 0.0_BDKi
+                  do idx_qp = 1, p%nqp
+                     m%elk(idx_dof1,i,idx_dof2,j) =  m%elk(idx_dof1,i,idx_dof2,j) &
+                          + (m%qp%Qe(idx_qp,idx_dof1,idx_dof2,nelem) +  m%qp%Ki(idx_qp,idx_dof1,idx_dof2,nelem))*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem) &
+                          +  m%qp%Pe(  idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,i,j) &
+                          +  m%qp%Oe(  idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,j,i) &
+                          +  m%qp%Stif(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_ShpDer_ShpDer_Jac(idx_qp,i,j,nelem) &
+                          + damp_mult_fac * &
+                          ( m%qp%Qd(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem) &
+                          + m%qp%Pd(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,i,j) &
+                          + m%qp%Od(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,j,i) &
+                          + m%qp%Sd(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_ShpDer_ShpDer_Jac(idx_qp,i,j,nelem))
 
+                     m%elm(idx_dof1,i,idx_dof2,j) = m%elm(idx_dof1,i,idx_dof2,j) + m%qp%Mi(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem)
 
-                  m%elm(idx_dof1, i, idx_dof2, j) = dot_product( &
-                       m%qp%Mi(:, idx_dof1, idx_dof2, nelem), p%QPtw_Shp_Shp_Jac(:, i, j, nelem))
-
-                  m%elg(idx_dof1, i, idx_dof2, j) = &
-                       dot_product(m%qp%Gi(:, idx_dof1, idx_dof2, nelem), p%QPtw_Shp_Shp_Jac(:, i, j, nelem)) + &
-                       damp_mult_fac * (&
-                       dot_product(m%qp%Xd(:, idx_dof1, idx_dof2, nelem), p%QPtw_Shp_Shp_Jac(:, i, j, nelem)) + &
-                       dot_product(m%qp%Yd(:, idx_dof1, idx_dof2, nelem), p%QPtw_Shp_ShpDer(:, i, j)) + &
-                       dot_product(m%qp%Gd(:, idx_dof1, idx_dof2, nelem), p%QPtw_Shp_ShpDer(:, i, j)) + &
-                       dot_product(m%qp%betaC(:, idx_dof1, idx_dof2, nelem), p%QPtw_ShpDer_ShpDer_Jac(:, i, j, nelem)))
-
-                     ! m%elk(idx_dof1,i,idx_dof2,j) =  m%elk(idx_dof1,i,idx_dof2,j) &
-                     !      + (m%qp%Qe(idx_qp,idx_dof1,idx_dof2,nelem) +  m%qp%Ki(idx_qp,idx_dof1,idx_dof2,nelem))*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem) &
-                     !      +  m%qp%Pe(  idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,i,j) &
-                     !      +  m%qp%Oe(  idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,j,i) &
-                     !      +  m%qp%Stif(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_ShpDer_ShpDer_Jac(idx_qp,i,j,nelem) &
-                     !      + damp_mult_fac * &
-                     !      ( m%qp%Qd(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem) &
-                     !      + m%qp%Pd(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,i,j) &
-                     !      + m%qp%Od(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,j,i) &
-                     !      + m%qp%Sd(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_ShpDer_ShpDer_Jac(idx_qp,i,j,nelem))
-
-                     ! m%elm(idx_dof1,i,idx_dof2,j) = m%elm(idx_dof1,i,idx_dof2,j) + m%qp%Mi(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem)
-
-                     ! m%elg(idx_dof1,i,idx_dof2,j) = m%elg(idx_dof1,i,idx_dof2,j) + m%qp%Gi(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem) &
-                     !      + damp_mult_fac * &
-                     !      ( m%qp%Xd(   idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem) &
-                     !      + m%qp%Yd(   idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,i,j) &
-                     !      + m%qp%Gd(   idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,j,i) &
-                     !      + m%qp%betaC(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_ShpDer_ShpDer_Jac(idx_qp,i,j,nelem))
+                     m%elg(idx_dof1,i,idx_dof2,j) = m%elg(idx_dof1,i,idx_dof2,j) + m%qp%Gi(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem) &
+                          + damp_mult_fac * &
+                          ( m%qp%Xd(   idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_Shp_Jac(idx_qp,i,j,nelem) &
+                          + m%qp%Yd(   idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,i,j) &
+                          + m%qp%Gd(   idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_Shp_ShpDer(idx_qp,j,i) &
+                          + m%qp%betaC(idx_qp,idx_dof1,idx_dof2,nelem)*p%QPtw_ShpDer_ShpDer_Jac(idx_qp,i,j,nelem))
+                  enddo
                ENDDO
             ENDDO
          ENDDO
       END DO
+      !$OMP END PARALLEL DO
 
    ENDIF
    
       ! Equations 13 and 14 in Wang_2014. F^ext is combined with F^D (F^D = F^D-F^ext)
 
+   !$OMP PARALLEL DO collapse(2)
    DO i=1,p%nodes_per_elem
       DO idx_dof1=1,p%dof_node
-         m%elf(idx_dof1, i) = &
-              - dot_product(m%qp%Fc(:, idx_dof1, nelem), p%QPtw_ShpDer(:, i)) &
-              - dot_product((m%qp%Ftemp(:, idx_dof1, nelem) + m%qp%Fi(:, idx_dof1, nelem)), &
-                p%Qptw_Shp_Jac(:, i, nelem))
+         m%elf(idx_dof1, i) = 0.0_BDki
+         do idx_qp = 1, p%nqp
+            m%elf(idx_dof1, i) = m%elf(idx_dof1, i) &
+                 - (m%qp%Fc(idx_qp, idx_dof1, nelem) * p%QPtw_ShpDer(idx_qp, i)) &
+                 - ((m%qp%Ftemp(idx_qp, idx_dof1, nelem) + m%qp%Fi(idx_qp, idx_dof1, nelem)) * &
+                 p%Qptw_Shp_Jac(idx_qp, i, nelem))
+         enddo
       ENDDO
    ENDDO
+   !$OMP END PARALLEL DO
    
    RETURN
 
